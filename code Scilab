@@ -1,0 +1,63 @@
+// -----------------------------------------
+// Simulation système masse-ressort-amortisseur
+// -----------------------------------------
+
+clear;
+clc;
+
+// -----------------------------
+// Paramètres du système
+// -----------------------------
+m = 1.0;    // masse
+c = 0.5;    // amortissement
+k = 4.0;    // raideur ressort
+
+// -----------------------------
+// Force appliquée
+// -----------------------------
+function F = force(t)
+    F = 1.0;     // force constante (échelon)
+endfunction
+
+// -----------------------------
+// Modèle dynamique (équations d'état)
+// -----------------------------
+function dX = systeme(t, X)
+    x1 = X(1);   // position
+    x2 = X(2);   // vitesse
+    
+    dx1 = x2;
+    dx2 = (force(t) - c*x2 - k*x1) / m;
+    
+    dX = [dx1; dx2];
+endfunction
+
+// -----------------------------
+// Conditions initiales
+// -----------------------------
+X0 = [0; 0];   // position = 0, vitesse = 0
+
+// -----------------------------
+// Temps de simulation
+// -----------------------------
+t0 = 0;
+t  = 0:0.01:10;   // de 0 à 10 secondes
+
+// -----------------------------
+// Résolution numérique
+// -----------------------------
+X = ode(X0, t0, t, systeme);
+
+// -----------------------------
+// Extraction des résultats
+// -----------------------------
+position = X(1, :);
+
+// -----------------------------
+// Affichage
+// -----------------------------
+plot(t, position);
+xlabel("Temps (s)");
+ylabel("Position x(t)");
+title("Réponse du système masse-ressort-amortisseur");
+xgrid();
